@@ -71,7 +71,7 @@ fun OnboardingScreen(onContinue: () -> Unit) {
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        // 📅 Date des dernières règles (calendrier)
+        // Date des dernières règles (calendrier)
         OutlinedTextField(
             value = lastPeriodDate,
             onValueChange = {},
@@ -108,7 +108,7 @@ fun OnboardingScreen(onContinue: () -> Unit) {
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        // 🔁 Durée du cycle
+        // Durée du cycle
         OutlinedTextField(
             value = cycleLength,
             onValueChange = { cycleLength = it },

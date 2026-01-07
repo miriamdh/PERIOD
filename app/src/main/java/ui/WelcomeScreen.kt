@@ -31,7 +31,7 @@ fun WelcomeScreen(onFinish: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFEFE1D8)), // 🌸 BEIGE
+            .background(Color(0xFFEFE1D8)),
         contentAlignment = Alignment.Center
     ) {
 
