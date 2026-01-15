@@ -40,5 +40,9 @@ class UserPreferences(private val context: Context) {
         val prefs = context.dataStore.data.first()
         return prefs[CYCLE_LENGTH]
     }
+    suspend fun clear() {
+        context.dataStore.edit { it.clear() }
+    }
+
 }
 

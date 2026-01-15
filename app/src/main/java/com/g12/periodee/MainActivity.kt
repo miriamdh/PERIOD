@@ -15,7 +15,6 @@ import com.g12.periodee.ui.theme.PERIODEETheme
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.sp
 import androidx.compose.material3.Text
-import com.g12.periodee.data.UserPreferences
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -38,15 +37,38 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.ui.text.style.TextAlign
+import com.g12.periodee.ui.ProfileScreen
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.launch
+import com.g12.periodee.data.FirestoreRepository
+import com.g12.periodee.data.User
+import com.g12.periodee.notifications.NotificationHelper
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (android.os.Build.VERSION.SDK_INT >= 33) {
+            requestPermissions(arrayOf(android.Manifest.permission.POST_NOTIFICATIONS), 1001)
+        }
 
         setContent {
+
             PERIODEETheme {
 
+                LaunchedEffect(Unit) {
+                    NotificationHelper.show(
+                        context = this@MainActivity,
+                        title = "🌸 Period",
+                        message = "Les notifications fonctionnent !",
+                        id = 1
+                    )
+                }
                 var currentScreen by remember { mutableStateOf("welcome") }
+                val scope = rememberCoroutineScope()
 
                 Box(
                     modifier = Modifier
@@ -55,23 +77,37 @@ class MainActivity : ComponentActivity() {
                 ) {
                     when (currentScreen) {
                         "welcome" -> WelcomeScreen {
-                            currentScreen = "onboarding"
+                            scope.launch {
+                                val firestore = FirestoreRepository()
+                                val user = firestore.getUser()
+
+                                currentScreen = if (user != null) "home" else "onboarding"
+                            }
                         }
+
                         "onboarding" -> OnboardingScreen {
                             currentScreen = "home"
                         }
-                        "home" -> HomeScreen()
+                        "home" -> HomeScreen {
+                            currentScreen = "profile"
+                        }
+                        "profile" -> ProfileScreen(
+                            onBack = { currentScreen = "home" },
+                            onBackToOnboarding = { currentScreen = "onboarding" }
+                        )
                     }
                 }
+
             }
         }
     }
 }
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(onProfileClick: () -> Unit) {
     val context = LocalContext.current
-    val userPrefs = UserPreferences(context)
+    val firestore = FirestoreRepository()
+
 
     var firstName by remember { mutableStateOf("") }
     var lastPeriodDate by remember { mutableStateOf("") }
@@ -87,29 +123,29 @@ fun HomeScreen() {
     var visible by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        firstName = userPrefs.getFirstName() ?: ""
-        lastPeriodDate = userPrefs.getLastPeriodDate() ?: ""
-        cycleLength = userPrefs.getCycleLength() ?: 28
+        val user = firestore.getUser()
 
-        if (lastPeriodDate.isNotEmpty()) {
+        if (user != null) {
+            firstName = user.firstName
+            lastPeriodDate = user.lastPeriodDate
+            cycleLength = user.cycleLength
+
             val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.FRANCE)
             val displayFormatter = DateTimeFormatter.ofPattern("dd MMMM", Locale.FRANCE)
 
             val lastDate = LocalDate.parse(lastPeriodDate, formatter)
             val nextPeriodDate = lastDate.plusDays(cycleLength.toLong())
-            nextPeriodText =
-                "Prochaine période estimée : ${nextPeriodDate.format(displayFormatter)}"
+
+            nextPeriodText = "Prochaine période estimée : ${nextPeriodDate.format(displayFormatter)}"
 
             val today = LocalDate.now()
-            val daysSince =
-                kotlin.math.max(
-                    0,
-                    java.time.temporal.ChronoUnit.DAYS.between(lastDate, today).toInt()
-                )
+            val daysSince = kotlin.math.max(
+                0,
+                java.time.temporal.ChronoUnit.DAYS.between(lastDate, today).toInt()
+            )
 
             dayOfCycle = (daysSince % cycleLength) + 1
-            progress =
-                (dayOfCycle.toFloat() / cycleLength.toFloat()).coerceIn(0f, 1f)
+            progress = (dayOfCycle.toFloat() / cycleLength.toFloat()).coerceIn(0f, 1f)
 
             when {
                 dayOfCycle <= 5 -> {
@@ -117,19 +153,16 @@ fun HomeScreen() {
                     sportTips = listOf("Marche douce", "Yoga / étirements")
                     nutritionTips = listOf("Repas chauds", "Fer + vitamine C")
                 }
-
                 dayOfCycle <= 13 -> {
                     phase = "Phase folliculaire"
                     sportTips = listOf("Cardio léger", "Renforcement doux")
                     nutritionTips = listOf("Protéines", "Fruits et légumes")
                 }
-
                 dayOfCycle <= 16 -> {
                     phase = "Ovulation"
                     sportTips = listOf("Séance plus intense", "Renfo + cardio")
                     nutritionTips = listOf("Bonnes graisses", "Hydratation")
                 }
-
                 else -> {
                     phase = "Phase lutéale"
                     sportTips = listOf("Marche", "Yoga / mobilité")
@@ -142,8 +175,7 @@ fun HomeScreen() {
     }
 
     Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+        modifier = Modifier.fillMaxSize()
     ) {
         AnimatedVisibility(
             visible = visible,
@@ -151,15 +183,16 @@ fun HomeScreen() {
             exit = fadeOut()
         ) {
             Column(
-                modifier = Modifier.padding(24.dp),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .statusBarsPadding()
+                    .padding(horizontal = 24.dp)
+                    .padding(top = 16.dp, bottom = 24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-
+            //Titre
                 Text(
-                    text = if (firstName.isNotEmpty())
-                        "Bonjour $firstName ♡"
-                    else
-                        "Bonjour ♡",
+                    text = if (firstName.isNotEmpty()) "Bonjour $firstName ♡" else "Bonjour ♡",
                     style = MaterialTheme.typography.headlineMedium,
                     fontSize = 34.sp
                 )
@@ -176,55 +209,38 @@ fun HomeScreen() {
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                Text(
-                    text = "Jour $dayOfCycle sur $cycleLength",
-                    style = MaterialTheme.typography.bodyMedium
-                )
+                Text("Jour $dayOfCycle sur $cycleLength")
 
                 Spacer(modifier = Modifier.height(17.dp))
 
                 LinearProgressIndicator(
                     progress = { progress },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
                         .height(16.dp),
                     color = Color(0xFFE39AB5)
                 )
-                Spacer(modifier = Modifier.height(24.dp))
 
-                Text(
-                    text = "Phase : $phase",
-                    style = MaterialTheme.typography.bodyMedium,
-                )
+                Spacer(modifier = Modifier.height(24.dp))
+                Text("Phase : $phase")
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Row(modifier = Modifier.fillMaxWidth()) {
-
                     Card(
                         modifier = Modifier.weight(1f),
                         shape = RoundedCornerShape(20.dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor = Color(0xFFF8D6E3)
-                        )
+                        colors = CardDefaults.cardColors(containerColor = Color(0xFFF8D6E3))
                     ) {
                         Column(
-                            modifier = Modifier
-                                .padding(16.dp)
-                                .fillMaxWidth(),
+                            modifier = Modifier.padding(16.dp).fillMaxWidth(),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Text(
-                                text = "Sport",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = Color(0xFFE39AB5)
-                            )
-
+                            Text("Sport", color = Color(0xFFE39AB5))
                             Spacer(modifier = Modifier.height(8.dp))
-
                             sportTips.forEach {
                                 Text(
-                                    text = "• $it",
-                                    style = MaterialTheme.typography.bodyMedium,
+                                    "• $it",
                                     color = Color(0xFF5F4B4B),
                                     modifier = Modifier.fillMaxWidth()
                                 )
@@ -237,34 +253,33 @@ fun HomeScreen() {
                     Card(
                         modifier = Modifier.weight(1f),
                         shape = RoundedCornerShape(20.dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor = Color(0xFFF8D6E3)
-                        )
+                        colors = CardDefaults.cardColors(containerColor = Color(0xFFF8D6E3))
                     ) {
                         Column(
-                            modifier = Modifier
-                                .padding(16.dp)
-                                .fillMaxWidth(),
+                            modifier = Modifier.padding(16.dp).fillMaxWidth(),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Text(
-                                text = "Nutrition",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = Color(0xFFE39AB5)
-                            )
-
+                            Text("Nutrition", color = Color(0xFFE39AB5))
                             Spacer(modifier = Modifier.height(8.dp))
-
                             nutritionTips.forEach {
                                 Text(
-                                    text = "• $it",
-                                    style = MaterialTheme.typography.bodyMedium,
+                                    "• $it",
                                     color = Color(0xFF5F4B4B),
                                     modifier = Modifier.fillMaxWidth()
                                 )
                             }
                         }
                     }
+                }
+                Spacer(modifier = Modifier.weight(1f))
+
+                Button(
+                    onClick = onProfileClick,
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(24.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE39AB5))
+                ) {
+                    Text("Modifier mes infos")
                 }
             }
         }

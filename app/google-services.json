@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "240420142648",
+    "project_id": "period-4fbc4",
+    "storage_bucket": "period-4fbc4.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:240420142648:android:8a7a94fbc2f3420a9870cd",
+        "android_client_info": {
+          "package_name": "com.g12.periodee"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAIaWLzJ2UE5X9rT0IxvvfPYw2ZoYi1Qig"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -22,17 +22,14 @@ import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import java.util.Locale
-
-
-
-
-
+import com.g12.periodee.data.FirestoreRepository
 
 @Composable
 fun OnboardingScreen(onContinue: () -> Unit) {
 
     val context = LocalContext.current
-    val userPrefs = UserPreferences(context)
+    //val userPrefs = UserPreferences(context)
+    val firestore = FirestoreRepository()
     val scope = rememberCoroutineScope()
 
     var firstName by remember { mutableStateOf("") }
@@ -60,7 +57,7 @@ fun OnboardingScreen(onContinue: () -> Unit) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // 🧍 Prénom
+        //Prénom
         OutlinedTextField(
             value = firstName,
             onValueChange = { firstName = it },
@@ -71,7 +68,7 @@ fun OnboardingScreen(onContinue: () -> Unit) {
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        // Date des dernières règles (calendrier)
+        //Date des dernières règles (calendrier)
         OutlinedTextField(
             value = lastPeriodDate,
             onValueChange = {},
@@ -119,19 +116,17 @@ fun OnboardingScreen(onContinue: () -> Unit) {
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        Button(
-            onClick = {
-                scope.launch {
-                    userPrefs.saveUser(
-                        firstName = firstName,
-                        cycleLength = cycleLength.toIntOrNull() ?: 28,
-                        lastPeriodDate = lastPeriodDate
-                    )
-                    onContinue()
-                }
-            },
-            shape = RoundedCornerShape(24.dp)
-        ) {
+        Button(onClick = {
+            scope.launch {
+                firestore.saveUser(
+                    firstName = firstName,
+                    cycleLength = cycleLength.toIntOrNull() ?: 28,
+                    lastPeriodDate = lastPeriodDate
+                )
+                onContinue()
+            }
+        })
+        {
             Text("Continuer")
         }
     }
