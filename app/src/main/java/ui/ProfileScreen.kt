@@ -15,6 +15,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import java.util.*
+import java.time.LocalDate
+import com.g12.periodee.data.CycleHistoryEntry
+
 
 import com.g12.periodee.data.FirestoreRepository
 @Composable
@@ -101,6 +104,17 @@ fun ProfileScreen(
         Button(
             onClick = {
                 scope.launch {
+
+                    val cycleLength = cycleLengthText.toIntOrNull() ?: 28
+
+                    firestore.addCycleToHistory(
+                        CycleHistoryEntry(
+                            periodStart = lastPeriodDate,
+                            cycleLength = cycleLength,
+                            recordedAt = LocalDate.now().toString()
+                        )
+                    )
+
                     firestore.saveUser(
                         firstName = firstName,
                         cycleLength = cycleLengthText.toIntOrNull() ?: 28,

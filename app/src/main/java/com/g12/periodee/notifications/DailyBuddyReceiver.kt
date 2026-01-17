@@ -3,28 +3,16 @@ package com.g12.periodee.notifications
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.g12.periodee.engine.CycleEngine
+import android.util.Log
 import com.g12.periodee.engine.TipsEngine
-import com.g12.periodee.data.FirestoreRepository
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class DailyBuddyReceiver : BroadcastReceiver() {
 
-    override fun onReceive(context: Context, intent: Intent) {
+    override fun onReceive(context: Context, intent: Intent?) {
+        try {
+            Log.d("DailyBuddyReceiver", "Daily buddy triggered")
 
-        CoroutineScope(Dispatchers.IO).launch {
-
-            val repo = FirestoreRepository()
-            val user = repo.getUser() ?: return@launch
-
-            val phase = CycleEngine.getPhase(
-                user.lastPeriodDate,
-                user.cycleLength
-            )
-
-            val (title, body) = TipsEngine.getBuddyMessage(phase)
+            val (title, body) = TipsEngine.getBuddyMessage("Règles")
 
             NotificationHelper.show(
                 context = context,
@@ -32,6 +20,9 @@ class DailyBuddyReceiver : BroadcastReceiver() {
                 message = body,
                 id = 200
             )
+
+        } catch (e: Exception) {
+            Log.e("DailyBuddyReceiver", "Erreur buddy", e)
         }
     }
 }

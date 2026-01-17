@@ -54,6 +54,7 @@ import com.g12.periodee.notifications.PeriodAlarmScheduler
 import java.time.temporal.ChronoUnit
 import com.g12.periodee.engine.TipsEngine
 import com.g12.periodee.engine.PhaseInfoEngine
+import com.g12.periodee.ui.HistoryScreen
 
 
 
@@ -97,13 +98,19 @@ class MainActivity : ComponentActivity() {
                         "onboarding" -> OnboardingScreen {
                             currentScreen = "home"
                         }
-                        "home" -> HomeScreen {
-                            currentScreen = "profile"
-                        }
+                        "home" -> HomeScreen(
+                            onProfileClick = { currentScreen = "profile" },
+                            onHistoryClick = { currentScreen = "history" }
+                        )
+
                         "profile" -> ProfileScreen(
                             onBack = { currentScreen = "home" },
                             onBackToOnboarding = { currentScreen = "onboarding" }
                         )
+                        "history" -> HistoryScreen(
+                            onBack = { currentScreen = "home" }
+                        )
+
                     }
                 }
 
@@ -113,8 +120,10 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun HomeScreen(onProfileClick: () -> Unit) {
-
+fun HomeScreen(
+    onProfileClick: () -> Unit,
+    onHistoryClick: () -> Unit
+) {
     val context = LocalContext.current
     val firestore = FirestoreRepository()
 
@@ -343,6 +352,16 @@ fun HomeScreen(onProfileClick: () -> Unit) {
                 ) {
                     Text("Modifier mes infos")
                 }
+                Button(
+                    onClick = { onHistoryClick() },
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(24.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF3B5C8))
+                ) {
+                    Text("Voir mon historique")
+                }
+
+
             }
         }
     }
