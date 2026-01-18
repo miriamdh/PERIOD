@@ -175,8 +175,10 @@ fun HomeScreen(
             val lastDate = LocalDate.parse(lastPeriodDate, formatter)
             val nextPeriodDate = lastDate.plusDays(cycleLength.toLong())
 
-            nextPeriodText =
-                "Prochaine période estimée : ${nextPeriodDate.format(displayFormatter)}"
+            nextPeriodText = context.getString(
+                R.string.next_period,
+                nextPeriodDate.format(displayFormatter)
+            )
 
             val today = LocalDate.now()
             val daysSince =
