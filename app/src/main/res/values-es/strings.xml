@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">PERIODEE</string>
+    <string name="hello_user">Hola %1$s ♡</string>
+    <string name="hello_no_name">Hola ♡</string>
+    <string name="next_period">Próximo período estimado: %1$s</string>
+    <string name="day_cycle">Día %1$d de %2$d</string>
+    <string name="phase_label">Fase: %1$s</string>
+    <string name="sport_title">Deporte</string>
+    <string name="nutrition_title">Nutrición</string>
+    <string name="edit_profile">Editar mis datos</string>
+    <string name="see_history">Ver historial</string>
+</resources>

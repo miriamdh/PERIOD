@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">PERIODEE</string>
+    <string name="hello_user">Hello %1$s ♡</string>
+    <string name="hello_no_name">Hello ♡</string>
+    <string name="next_period">Next estimated period: %1$s</string>
+    <string name="day_cycle">Day %1$d of %2$d</string>
+    <string name="phase_label">Phase: %1$s</string>
+    <string name="sport_title">Workout</string>
+    <string name="nutrition_title">Nutrition</string>
+    <string name="edit_profile">Edit my info</string>
+    <string name="see_history">View history</string>
+</resources>

@@ -55,6 +55,9 @@ import java.time.temporal.ChronoUnit
 import com.g12.periodee.engine.TipsEngine
 import com.g12.periodee.engine.PhaseInfoEngine
 import com.g12.periodee.ui.HistoryScreen
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.ui.res.stringResource
 
 
 
@@ -213,13 +216,17 @@ fun HomeScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .statusBarsPadding()
+                    .verticalScroll(rememberScrollState())
                     .padding(horizontal = 24.dp)
                     .padding(top = 16.dp, bottom = 24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
                 Text(
-                    text = if (firstName.isNotEmpty()) "Bonjour $firstName ♡" else "Bonjour ♡",
+                    text = if (firstName.isNotEmpty())
+                        stringResource(R.string.hello_user, firstName)
+                    else
+                        stringResource(R.string.hello_no_name),
                     style = MaterialTheme.typography.headlineMedium,
                     fontSize = 34.sp
                 )
@@ -236,7 +243,14 @@ fun HomeScreen(
 
                 Spacer(Modifier.height(20.dp))
 
-                Text("Jour $dayOfCycle sur $cycleLength")
+                Text(
+                    text = stringResource(
+                        R.string.day_cycle,
+                        dayOfCycle,
+                        cycleLength
+                    )
+                )
+
                 Spacer(Modifier.height(12.dp))
 
                 LinearProgressIndicator(
@@ -248,8 +262,16 @@ fun HomeScreen(
                 )
 
                 Spacer(Modifier.height(20.dp))
-                Text("Phase : $phase")
+
+                Text(
+                    text = stringResource(
+                        R.string.phase_label,
+                        phase
+                    )
+                )
+
                 Spacer(Modifier.height(16.dp))
+
 
                 //My buddy
                 if (buddyTitle.isNotEmpty()) {
@@ -310,7 +332,10 @@ fun HomeScreen(
                             modifier = Modifier.padding(16.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Text("Sport", color = Color(0xFFE39AB5))
+                            Text(
+                                text = stringResource(R.string.sport_title),
+                                color = Color(0xFFE39AB5)
+                            )
                             Spacer(Modifier.height(8.dp))
                             sportTips.forEach {
                                 Text("• $it", color = Color(0xFF5F4B4B))
@@ -331,7 +356,10 @@ fun HomeScreen(
                             modifier = Modifier.padding(16.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Text("Nutrition", color = Color(0xFFE39AB5))
+                            Text(
+                                text = stringResource(R.string.nutrition_title),
+                                color = Color(0xFFE39AB5)
+                            )
                             Spacer(Modifier.height(8.dp))
                             nutritionTips.forEach {
                                 Text("• $it", color = Color(0xFF5F4B4B))
@@ -340,7 +368,7 @@ fun HomeScreen(
                     }
                 }
 
-                Spacer(Modifier.weight(1f))
+                //Spacer(Modifier.weight(1f))
 
                 Button(
                     onClick = onProfileClick,
@@ -350,7 +378,7 @@ fun HomeScreen(
                         containerColor = Color(0xFFE39AB5)
                     )
                 ) {
-                    Text("Modifier mes infos")
+                    Text(stringResource(R.string.edit_profile))
                 }
                 Button(
                     onClick = { onHistoryClick() },
@@ -358,7 +386,7 @@ fun HomeScreen(
                     shape = RoundedCornerShape(24.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE39AB5))
                 ) {
-                    Text("Voir mon historique")
+                    Text(stringResource(R.string.see_history))
                 }
 
 
