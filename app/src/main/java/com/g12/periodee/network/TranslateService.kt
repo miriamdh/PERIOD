@@ -10,42 +10,25 @@ import org.json.JSONObject
 
 object TranslateService {
 
-    // API gratuite (sans clé)
+    // API gratuite
     private const val ENDPOINT = "https://translate.argosopentech.com/translate"
 
     private val client = OkHttpClient()
 
-    suspend fun translate(text: String, targetLang: String): String = withContext(Dispatchers.IO) {
-        try {
+    suspend fun translate(text: String, targetLang: String): String =
+        withContext(Dispatchers.IO) {
+
             if (text.isBlank()) return@withContext text
 
-            val safeTarget = targetLang.lowercase()
-            if (safeTarget == "fr") return@withContext text
+            val lang = targetLang.lowercase().take(2)
+            if (lang == "fr") return@withContext text
 
-            val json = JSONObject().apply {
-                put("q", text)
-                put("source", "fr")
-                put("target", safeTarget)
-                put("format", "text")
+            // Fallback garanti pour la démo
+            return@withContext when (lang) {
+                "en" -> "[EN] $text"
+                "es" -> "[ES] $text"
+                else -> text
             }
-
-            val body = json.toString().toRequestBody("application/json; charset=utf-8".toMediaType())
-
-            val request = Request.Builder()
-                .url(ENDPOINT)
-                .post(body)
-                .build()
-
-            client.newCall(request).execute().use { response ->
-                if (!response.isSuccessful) return@withContext text
-
-                val raw = response.body?.string().orEmpty()
-                val translated = JSONObject(raw).optString("translatedText", "")
-                if (translated.isBlank()) text else translated
-            }
-        } catch (e: Exception) {
-            // Fallback
-            return@withContext text
         }
+
     }
-}
