@@ -17,6 +17,8 @@ import kotlinx.coroutines.launch
 import java.util.*
 import java.time.LocalDate
 import com.g12.periodee.data.CycleHistoryEntry
+import androidx.compose.ui.res.stringResource
+import com.g12.periodee.R
 
 
 import com.g12.periodee.data.FirestoreRepository
@@ -52,13 +54,16 @@ fun ProfileScreen(
         verticalArrangement = Arrangement.Center
     ) {
 
-        Text("Mes informations", style = MaterialTheme.typography.headlineMedium)
+        Text(
+            text = stringResource(R.string.profile_title),
+            style = MaterialTheme.typography.headlineMedium
+        )
         Spacer(Modifier.height(16.dp))
 
         OutlinedTextField(
             value = firstName,
             onValueChange = { firstName = it },
-            label = { Text("Prénom") },
+            label = { Text(stringResource(R.string.first_name_label)) },
             shape = RoundedCornerShape(20.dp),
             modifier = Modifier.fillMaxWidth()
         )
@@ -68,7 +73,7 @@ fun ProfileScreen(
         OutlinedTextField(
             value = lastPeriodDate,
             onValueChange = {},
-            label = { Text("Date des dernières règles") },
+            label = { Text(stringResource(R.string.last_period_label)) },
             readOnly = true,
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(20.dp),
@@ -85,17 +90,21 @@ fun ProfileScreen(
                         cal.get(Calendar.DAY_OF_MONTH)
                     ).show()
                 }) {
-                    Icon(Icons.Default.DateRange, contentDescription = "Choisir une date")
+                    Icon(
+                        Icons.Default.DateRange,
+                        contentDescription = stringResource(R.string.pick_date)
+                    )
                 }
             }
         )
+
 
         Spacer(Modifier.height(12.dp))
 
         OutlinedTextField(
             value = cycleLengthText,
             onValueChange = { cycleLengthText = it },
-            label = { Text("Durée du cycle (ex : 28)") },
+            label = { Text(stringResource(R.string.cycle_length_label)) },
             shape = RoundedCornerShape(20.dp),
             modifier = Modifier.fillMaxWidth()
         )
@@ -105,9 +114,7 @@ fun ProfileScreen(
         Button(
             onClick = {
                 scope.launch {
-
                     val cycleLength = cycleLengthText.toIntOrNull() ?: 28
-
                     firestore.addCycleToHistory(
                         CycleHistoryEntry(
                             periodStart = lastPeriodDate,
@@ -115,10 +122,9 @@ fun ProfileScreen(
                             recordedAt = LocalDate.now().toString()
                         )
                     )
-
                     firestore.saveUser(
                         firstName = firstName,
-                        cycleLength = cycleLengthText.toIntOrNull() ?: 28,
+                        cycleLength = cycleLength,
                         lastPeriodDate = lastPeriodDate
                     )
                     onBack()
@@ -127,11 +133,11 @@ fun ProfileScreen(
             shape = RoundedCornerShape(24.dp),
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE39AB5))
         ) {
-            Text("Enregistrer")
+            Text(stringResource(R.string.save_button))
         }
 
         TextButton(onClick = onBack) {
-            Text("Retour")
+            Text(stringResource(R.string.back_button))
         }
 
         TextButton(onClick = {
@@ -140,7 +146,10 @@ fun ProfileScreen(
                 onBackToOnboarding()
             }
         }) {
-            Text("Réinitialiser mes données")
+            Text(stringResource(R.string.reset_data))
         }
     }
 }
+
+
+

@@ -13,7 +13,8 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 import androidx.compose.foundation.background
 import androidx.compose.ui.graphics.Color
-
+import androidx.compose.ui.res.stringResource
+import com.g12.periodee.R
 
 @Composable
 fun WelcomeScreen(onFinish: () -> Unit) {
@@ -40,24 +41,25 @@ fun WelcomeScreen(onFinish: () -> Unit) {
             enter = fadeIn(),
             exit = fadeOut()
         ) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
 
-                Text(
-                    text = "Bienvenue sur Period",
-                    style = MaterialTheme.typography.headlineLarge
-                )
+            Text(
+                text = stringResource(R.string.welcome_title),
+                style = MaterialTheme.typography.headlineLarge
+            )
 
-                Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-                Text(
-                    text = "Une application pensée pour ton bien‑être.",
-                    style = MaterialTheme.typography.bodyMedium
-                )
+            Text(
+                text = stringResource(R.string.welcome_subtitle_1),
+                style = MaterialTheme.typography.bodyMedium
+            )
 
-                Text(
-                    text = "Comprends ton cycle, simplement.",
-                    style = MaterialTheme.typography.bodyMedium
-                )
+            Text(
+                text = stringResource(R.string.welcome_subtitle_2),
+                style = MaterialTheme.typography.bodyMedium
+            )
+
             }
         }
     }

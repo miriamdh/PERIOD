@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">PERIODEE</string>
+    <string name="welcome_title">Bienvenue sur PERIODEE</string>
+    <string name="welcome_subtitle_1">Une application pensée pour ton bien‑être.</string>
+    <string name="welcome_subtitle_2">Comprends ton cycle, simplement.</string>
     <string name="hello_user">Bonjour %1$s ♡</string>
     <string name="hello_no_name">Bonjour ♡</string>
     <string name="next_period">Prochaine période estimée : %1$s</string>
@@ -9,4 +12,13 @@
     <string name="nutrition_title">Nutrition</string>
     <string name="edit_profile">Modifier mes infos</string>
     <string name="see_history">Voir mon historique</string>
+    <string name="profile_title">Mes informations</string>
+    <string name="first_name_label">Prénom</string>
+    <string name="last_period_label">Date des dernières règles</string>
+    <string name="pick_date">Choisir une date</string>
+    <string name="cycle_length_label">Durée du cycle (ex : 28)</string>
+    <string name="save_button">Enregistrer</string>
+    <string name="back_button">Retour</string>
+    <string name="reset_data">Réinitialiser mes données</string>
+
 </resources>
