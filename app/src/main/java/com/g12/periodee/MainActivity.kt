@@ -69,14 +69,14 @@ class MainActivity : ComponentActivity() {
 
             PERIODEETheme {
 
-                LaunchedEffect(Unit) {
-                    NotificationHelper.show(
-                        context = this@MainActivity,
-                        title = "🌸 Period",
-                        message = "Les notifications fonctionnent !",
-                        id = 1
-                    )
-                }
+//                LaunchedEffect(Unit) {
+//                    NotificationHelper.show(
+//                        context = this@MainActivity,
+//                        title = "🌸 Period",
+//                        message = "Les notifications fonctionnent !",
+//                        id = 1
+//                    )
+//                }
                 var currentScreen by remember { mutableStateOf("welcome") }
                 val scope = rememberCoroutineScope()
 
@@ -356,7 +356,7 @@ fun HomeScreen(
                     onClick = { onHistoryClick() },
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(24.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF3B5C8))
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE39AB5))
                 ) {
                     Text("Voir mon historique")
                 }

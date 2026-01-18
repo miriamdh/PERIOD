@@ -48,7 +48,8 @@ fun ProfileScreen(
             .fillMaxSize()
             .background(Color(0xFFEFE1D8))
             .padding(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
 
         Text("Mes informations", style = MaterialTheme.typography.headlineMedium)

@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.g12.periodee.ui
 
 import androidx.compose.foundation.background
@@ -5,7 +7,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -17,6 +18,9 @@ import androidx.compose.ui.unit.sp
 import com.g12.periodee.data.CycleHistoryEntry
 import com.g12.periodee.data.FirestoreRepository
 import kotlinx.coroutines.launch
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+
 
 @Composable
 fun HistoryScreen(onBack: () -> Unit) {
@@ -42,11 +46,37 @@ fun HistoryScreen(onBack: () -> Unit) {
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFFEFE1D8))
-            .padding(20.dp)
     ) {
 
-        Text("Mon historique", style = MaterialTheme.typography.headlineMedium)
-        Spacer(Modifier.height(16.dp))
+        //Top bar avec retour
+        TopAppBar(
+            title = {
+                Text(
+                    "Mon historique",
+                    color = Color(0xFF5F4B4B)
+                )
+            },
+            navigationIcon = {
+                IconButton(onClick = onBack) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = "Retour",
+                        tint = Color(0xFFE39AB5)
+                    )
+                }
+            },
+            colors = TopAppBarDefaults.topAppBarColors(
+                containerColor = Color(0xFFEFE1D8)
+            )
+        )
+
+        // Contenu
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(20.dp)
+        ) {
+
 
         //Moyenne
         averageCycle?.let {
@@ -174,13 +204,14 @@ fun HistoryScreen(onBack: () -> Unit) {
 
         Spacer(Modifier.weight(1f))
 
-        Button(
-            onClick = onBack,
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(24.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE39AB5))
-        ) {
-            Text("Retour")
-        }
+//        Button(
+//            onClick = onBack,
+//            modifier = Modifier.fillMaxWidth(),
+//            shape = RoundedCornerShape(24.dp),
+//            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE39AB5))
+//        ) {
+//            Text("Retour")
+//        }
     }
+}
 }
