@@ -58,7 +58,9 @@ import com.g12.periodee.ui.HistoryScreen
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.ui.res.stringResource
-
+import androidx.compose.runtime.*
+import androidx.compose.ui.platform.LocalContext
+import com.g12.periodee.network.TranslateService
 
 
 class MainActivity : ComponentActivity() {
@@ -195,15 +197,34 @@ fun HomeScreen(
             }
             phaseInfoText = PhaseInfoEngine.getLongText(phase)
 
-            //Récupération contenu TipsEngine
+            // Récupération contenu TipsEngine
             val content = TipsEngine.getContent(phase)
+
+// Langue du téléphone
+            val lang = Locale.getDefault().language
+
+// Textes par défaut (FR)
             buddyTitle = content.buddyTitle
             buddyBody = content.buddyBody
+
             sportTips = content.sport
             nutritionTips = content.nutrition
-        }
 
-        visible = true
+// Traduction via API
+
+                buddyTitle = TranslateService.translate(
+                    content.buddyTitle,
+                    lang
+                )
+                buddyBody = TranslateService.translate(
+                    content.buddyBody,
+                    lang
+                )
+
+
+            visible = true
+
+        }
     }
 
     Box(modifier = Modifier.fillMaxSize()) {

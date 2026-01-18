@@ -45,7 +45,7 @@ object TranslateService {
             }
         } catch (e: Exception) {
             // Fallback
-            text
+            return@withContext text
         }
     }
 }
