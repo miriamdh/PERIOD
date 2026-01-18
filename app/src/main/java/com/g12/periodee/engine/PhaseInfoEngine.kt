@@ -2,6 +2,16 @@ package com.g12.periodee.engine
 
 object PhaseInfoEngine {
 
+    fun getPhase(dayOfCycle: Int): String {
+        return when {
+            dayOfCycle <= 5 -> "MENSTRUAL"
+            dayOfCycle <= 13 -> "FOLLICULAR"
+            dayOfCycle <= 16 -> "OVULATION"
+            else -> "LUTEAL"
+        }
+    }
+
+
     fun getLongText(phase: String): String {
         return when (phase) {
 

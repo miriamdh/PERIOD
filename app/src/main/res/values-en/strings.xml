@@ -12,7 +12,7 @@
     <string name="nutrition_title">Nutrition</string>
     <string name="edit_profile">Edit my info</string>
     <string name="see_history">View history</string>
-    <string name="profile_title">My information</string>
+    <string name="profile_title">My informations</string>
     <string name="first_name_label">First name</string>
     <string name="last_period_label">Last period date</string>
     <string name="pick_date">Choose a date</string>
@@ -20,5 +20,13 @@
     <string name="save_button">Save</string>
     <string name="back_button">Back</string>
     <string name="reset_data">Reset my data</string>
+    <string name="history_title">My history</string>
+    <string name="average_cycle">Average cycle</string>
+    <string name="days">days</string>
+    <string name="no_history">No cycles recorded yet 🌱</string>
+    <string name="cycle_evolution">Cycle evolution</string>
+    <string name="details">Details</string>
+    <string name="cycle_start">Start:</string>
+    <string name="delete">Delete</string>
 
 </resources>

@@ -61,6 +61,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import com.g12.periodee.network.TranslateService
+import kotlinx.coroutines.async
+import androidx.compose.ui.platform.testTag
 
 
 class MainActivity : ComponentActivity() {
@@ -152,6 +154,8 @@ fun HomeScreen(
 
     var phaseInfoText by remember { mutableStateOf("") }
 
+    val scope = rememberCoroutineScope()
+
 
     LaunchedEffect(Unit) {
         val user = firestore.getUser()
@@ -192,36 +196,53 @@ fun HomeScreen(
 
             //Calcul de la phase
             phase = when {
-                dayOfCycle <= 5 -> "Règles"
-                dayOfCycle <= 13 -> "Phase folliculaire"
-                dayOfCycle <= 16 -> "Ovulation"
-                else -> "Phase lutéale"
+                dayOfCycle <= 5 -> "MENSTRUAL"
+                dayOfCycle <= 13 -> "FOLLICULAR"
+                dayOfCycle <= 16 -> "OVULATION"
+                else -> "LUTEAL"
             }
             phaseInfoText = PhaseInfoEngine.getLongText(phase)
 
             // Récupération contenu TipsEngine
             val content = TipsEngine.getContent(phase)
 
-// Langue du téléphone
+            // Langue du téléphone
             val lang = Locale.getDefault().language
 
-// Textes par défaut (FR)
+            // Textes par défaut (FR)
             buddyTitle = content.buddyTitle
             buddyBody = content.buddyBody
 
             sportTips = content.sport
             nutritionTips = content.nutrition
 
-// Traduction via API
+            scope.launch {
+                val translatedBuddyTitle = async {
+                    TranslateService.translate(content.buddyTitle, lang)
+                }
+                val translatedBuddyBody = async {
+                    TranslateService.translate(content.buddyBody, lang)
+                }
+                val translatedPhaseInfo = async {
+                    TranslateService.translate(
+                        PhaseInfoEngine.getLongText(phase),
+                        lang
+                    )
+                }
+                val translatedSport = async {
+                    content.sport.map { TranslateService.translate(it, lang) }
+                }
+                val translatedNutrition = async {
+                    content.nutrition.map { TranslateService.translate(it, lang) }
+                }
 
-                buddyTitle = TranslateService.translate(
-                    content.buddyTitle,
-                    lang
-                )
-                buddyBody = TranslateService.translate(
-                    content.buddyBody,
-                    lang
-                )
+                buddyTitle = translatedBuddyTitle.await()
+                buddyBody = translatedBuddyBody.await()
+                phaseInfoText = translatedPhaseInfo.await()
+                sportTips = translatedSport.await()
+                nutritionTips = translatedNutrition.await()
+            }
+
 
 
             visible = true
@@ -395,22 +416,26 @@ fun HomeScreen(
 
                 Button(
                     onClick = onProfileClick,
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag("btn_edit_profile"),
                     shape = RoundedCornerShape(24.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFFE39AB5)
-                    )
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE39AB5))
                 ) {
                     Text(stringResource(R.string.edit_profile))
                 }
+
                 Button(
                     onClick = { onHistoryClick() },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag("btn_history"),
                     shape = RoundedCornerShape(24.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE39AB5))
                 ) {
                     Text(stringResource(R.string.see_history))
                 }
+
 
 
             }

@@ -15,7 +15,11 @@ android {
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
-
+        buildConfigField(
+            "String",
+            "TRANSLATE_API_KEY",
+            "\"${project.properties["GOOGLE_TRANSLATE_API_KEY"]}\""
+        )
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -37,6 +41,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -54,6 +59,7 @@ dependencies {
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.datastore:datastore-preferences:1.0.0")
     testImplementation(libs.junit)
+    testImplementation(libs.androidx.core)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))

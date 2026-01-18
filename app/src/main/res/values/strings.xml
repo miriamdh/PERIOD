@@ -20,4 +20,12 @@
     <string name="save_button">Enregistrer</string>
     <string name="back_button">Retour</string>
     <string name="reset_data">Réinitialiser mes données</string>
+    <string name="history_title">Mon historique</string>
+    <string name="average_cycle">Moyenne de cycle</string>
+    <string name="days">jours</string>
+    <string name="no_history">Aucun cycle enregistré pour le moment 🌱</string>
+    <string name="cycle_evolution">Évolution de mes cycles</string>
+    <string name="details">Détails</string>
+    <string name="cycle_start">Début :</string>
+    <string name="delete">Supprimer</string>
 </resources>
